@@ -1,5 +1,9 @@
 # Mortgage-and-Amortization-Calculator
 Easily calculate a monthly mortgage payment and amortization schedule
+- Git the executable for Windows for a very easy and ready to run application with GUI interface
+- Git the raw python code that makes up the application and run it from any operating system that supports python (GUI)
+- Git the command line python version of the application
+#### Requires tkinter
 
 This application uses the well known Amortization Caclulation Function and takes into account if you already have a mortgage and want to break down the amortization schedule or are trying to find out an accurate future mortgage payment.
 
