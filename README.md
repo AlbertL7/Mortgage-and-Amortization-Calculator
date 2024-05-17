@@ -4,7 +4,9 @@ Easily calculate a monthly mortgage payment and amortization schedule
 This application uses the well known Amortization Caclulation Function and takes into account if you already have a mortgage and want to break down the amortization schedule or are trying to find out an accurate future mortgage payment
 The monthly payment \( P \) is calculated using the formula:
 
-\[ P = \frac{r \times PV}{1 - (1 + r)^{-n}} \]
+$$
+P = \frac{r \times PV}{1 - (1 + r)^{-n}}
+$$
 
 Where:
 - \( P \) is the monthly payment.
