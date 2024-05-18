@@ -37,14 +37,14 @@ class AmortizationCalculator:
         tk.Button(self.root, text="Reset", command=self.reset_fields).grid(row=5, column=0, columnspan=2)
 
     def reset_fields(self):
-        self.pv.set(0.0)
-        self.r.set(0.0)
+        self.pv.set(0.00)
+        self.r.set(0.00)
         self.n.set(0)
-        self.p.set(0.0)
-        self.home_insurance.set(0.0)
-        self.mortgage_insurance.set(0.0)
-        self.property_tax.set(0.0)
-        self.extra_towards_principal.set(0.0)
+        self.p.set(0.00)
+        self.home_insurance.set(0.00)
+        self.mortgage_insurance.set(0.00)
+        self.property_tax.set(0.00)
+        self.extra_towards_principal.set(0.00)
         self.known_payment.set("no")
 
         for widget in self.root.winfo_children():
@@ -147,17 +147,18 @@ class AmortizationCalculator:
         if known_payment:
             interest_payment = pv * r
             principal_payment = p - interest_payment - total_additional_costs + extra_towards_principal
-            new_balance = pv - principal_payment
+            new_balance = pv - principal_payment        
+            
         else:
             interest_payment = pv * r
             principal_payment = p - interest_payment - total_additional_costs + extra_towards_principal
             new_balance = pv - principal_payment
-
+            
         result = (
             f"Interest Payment: {interest_payment:.2f}\n"
             f"Principal Payment: {principal_payment:.2f}\n"
-            f"Additional Costs: {total_additional_costs}\n"
-            f"Total monthly Payment: {p:.2f}\n"
+            f"Additional Costs: {total_additional_costs:.2f}\n"
+            f"Total monthly Payment: {p:.2f} + {extra_towards_principal:.2f} (Extra Towards principal)\n"
             f"New Balance after Payment: {new_balance:.2f}"
         )
 
