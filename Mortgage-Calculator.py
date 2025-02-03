@@ -11,10 +11,10 @@ class AmortizationCalculator:
         self.r = tk.DoubleVar()
         self.n = tk.IntVar()
         self.p = tk.DoubleVar()
-        self.home_insurance = tk.DoubleVar(value=0.0)
-        self.mortgage_insurance = tk.DoubleVar(value=0.0)
-        self.property_tax = tk.DoubleVar(value=0.0)
-        self.extra_towards_principal = tk.DoubleVar(value=0.0)
+        self.home_insurance = tk.DoubleVar(value=0.00)
+        self.mortgage_insurance = tk.DoubleVar(value=0.00)
+        self.property_tax = tk.DoubleVar(value=0.00)
+        self.extra_towards_principal = tk.DoubleVar(value=0.00)
         self.known_payment = tk.StringVar(value="no")
 
         # Create UI elements
@@ -170,32 +170,68 @@ class AmortizationCalculator:
             month = 1
             current_balance = pv
             schedule = ""
+            total_cost = 0.0
+            total_interest_paid = 0.0
+            total_principal_paid = 0.0
+            original_interest_paid = 0.0
+
+            temp_balance = pv
+            for _ in range(n):
+                interest_payment = temp_balance * r
+                principal_payment = p - interest_payment - total_additional_costs
+                if temp_balance <= 0:
+                    break
+                temp_balance -= principal_payment
+                original_interest_paid += interest_payment
 
             while current_balance > 0:
                 interest_payment = current_balance * r
                 principal_payment = p - interest_payment - total_additional_costs + extra_towards_principal
+                total_payment = interest_payment + principal_payment + total_additional_costs  # Total monthly payment
+
                 if principal_payment >= current_balance:
                     principal_payment = current_balance
                     current_balance = 0
                 else:
                     current_balance -= principal_payment
 
+                total_cost += total_payment
+                total_interest_paid += interest_payment
+                total_principal_paid += principal_payment
+
+                if extra_towards_principal == 0:
+                    original_interest_paid += interest_payment
+
+                interest_ratio = (interest_payment / total_payment) * 100 #interest to payment ratio
+                
                 schedule += (
                     f"Month {month}:\n"
-                    f"Interest Payment: {interest_payment:.2f}\n"
+                    f"Interest Payment: {interest_payment:.2f} ({interest_ratio:.2f}% of payment)\n"
                     f"Principal Payment: {principal_payment:.2f} (includes any extra payment)\n"
+                    f"Total Payment: {total_payment:.2f}\n"
                     f"Remaining Balance: {current_balance:.2f}\n\n"
                 )
 
                 month += 1
                 if current_balance == 0:
-                    schedule += "Loan paid in full\n"
+                    schedule += "*****Loan Summary*****\n"
                     years_to_payoff = month / 12
-                    schedule += f"Years to pay off loan: {years_to_payoff:.2f}\n"
+                    schedule += f"\n^^Years to pay off loan: {years_to_payoff:.2f}^^"
                     break
                 elif month > n:
                     schedule += "Error: Loan term exceeded without full payoff.\n"
                     break
+
+            if extra_towards_principal > 0:
+                interest_saved = original_interest_paid - total_interest_paid
+                months_saved = n - month
+                schedule += f"\n^^Extra Payments Reduced Loan Term by {months_saved} Months^^"
+                schedule += f"\n^^Total Interest Saved: {interest_saved:.2f}^^"
+
+            schedule += f"\n^^Total Interest Paid: {total_interest_paid:.2f}^^"
+            schedule += f"\n^^Total Principal Paid: {total_principal_paid:.2f}^^\n"
+            schedule += f"\n^^Total Cost of the Loan: {total_cost:.2f}^^\n"
+
 
             self.show_schedule_window(schedule)
 
